@@ -1,4 +1,5 @@
 ;;; Capture templates
+;;;###autoload
 (with-eval-after-load 'org-roam
   (setq org-roam-capture-templates
    (list
@@ -10,6 +11,7 @@
 
 ;;; Create org-roam files in tag directories
 ;; Capture
+;;;###autoload
 (defun j/org-roam-capture (&optional goto keys)
   "Launches an `org-capture` process for a new existing note.
 This uses the templates defined at `org-roam-capture-templates`.
@@ -39,6 +41,7 @@ Arguments GOTO and KEYS see `org-capture`."
 
 
 ;; Find File
+;;;###autoload
 (defun j/org-roam-find-file (&optional initial-prompt completions filter-fn no-confirm)
   "launches org-roam-find-file but supports creating notes in subdirectories"
   :override #'org-roam-find-file
@@ -67,6 +70,7 @@ Arguments GOTO and KEYS see `org-capture`."
         (org-roam-capture--capture)))))
 
 ;; Insert
+;;;###autoload
 (defun j/org-roam-insert (&optional lowercase completions filter-fn description link-type)
   "launches org-roam-insert but supports creating notes in subdirectories"
   :override #'org-roam-insert
@@ -122,4 +126,13 @@ Arguments GOTO and KEYS see `org-capture`."
     (deactivate-mark)) ;; Deactivate the mark on quit since `atomic-change-group' prevents it
   )
 
-(provide 'ej-org-roam-mode)
+;;;###autoload
+(define-minor-mode org-roam-dir-mode
+  "Pick directorys when creating org-roam notes" 
+  :lighter "roam-dir"
+  :keymap (let ((map (make-sparse-keymap)))
+            (define-key map (kbd "C-c n d") 'org-roam-toggle-default-dir)
+            (define-key map (kbd "C-c n s") 'org-roam-toggle-session-dir)
+            map))
+  
+(provide 'org-roam-dir-mode)
