@@ -121,3 +121,5 @@ Arguments GOTO and KEYS see `org-capture`."
           res))
     (deactivate-mark)) ;; Deactivate the mark on quit since `atomic-change-group' prevents it
   )
+
+(provide 'ej-org-roam-mode)
