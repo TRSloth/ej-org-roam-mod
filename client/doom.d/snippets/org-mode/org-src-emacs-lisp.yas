@@ -1,9 +1,0 @@
-# -*- mode: snippet -*-
-# name: elisp
-# uuid: elisp
-# key: <ee
-# condition: t
-# --
-#+begin_src emacs-lisp
-$0
-#+end_src
