@@ -24,18 +24,15 @@ Arguments GOTO and KEYS see `org-capture`."
                                                                 completions))
          (res (cdr (assoc title-with-keys completions)))
          (title (or (plist-get res :title) title-with-keys))
-
-         (tags (split-string title "/"));;;
-         (title (car (last tags)));;;
-         (dir (string-join (butlast tags) "/"));;;
-         (dir (if (string-blank-p dir) (
-"" (concat  "org-ro0mdefault/"))));;;
-
+         (tags (split-string title "/"))
+         (title (car (last tags)))
+         (dir (string-join (butlast tags) "/"))
+         (dir (if (string-blank-p dir) "" (concat dir "/")))
          (file-path (plist-get res :path)))
     (let ((org-roam-capture--info (list (cons 'title title)
                                         (cons 'slug (funcall org-roam-title-to-slug-function title))
                                         (cons 'file file-path)
-                                        (cons 'dir dir)));;;
+                                        (cons 'dir dir)))
           (org-roam-capture--context 'capture))
       (condition-case err
           (org-roam-capture--capture goto keys)
@@ -57,20 +54,17 @@ Arguments GOTO and KEYS see `org-capture`."
                             (org-roam-completion--completing-read "File: " completions
                                                                   :initial-input initial-prompt)))
          (res (cdr (assoc title-with-tags completions)))
-
-         (title title-with-tags);;;
-         (tags (split-string title "/"));;;
-         (title (car (last tags)));;;
-         (dir (string-join (butlast tags) "/"));;;
-         (dir (if (string-blank-p dir) (
-"" (concat  "org-roamdefault/"))));;;
-
+         (title title-with-tags)
+         (tags (split-string title "/"))
+         (title (car (last tags)))
+         (dir (string-join (butlast tags) "/"))
+         (dir (if (string-blank-p dir) "" (concat dir "/")))
          (file-path (plist-get res :path)))
     (if file-path
         (org-roam--find-file file-path)
       (let ((org-roam-capture--info `((title . ,title)
                                       (slug  . ,(funcall org-roam-title-to-slug-function title))
-                                      (dir   . ,dir)));;;
+                                      (dir   . ,dir)))
             (org-roam-capture--context 'title))
         (setq org-roam-capture-additional-template-props (list :finalize 'find-file))
         (org-roam-capture--capture)))))
@@ -101,13 +95,10 @@ Arguments GOTO and KEYS see `org-capture`."
                (res (cdr (assoc title-with-tags completions)))
                (title (or (plist-get res :title)
                           title-with-tags))
-
-               (tags (split-string title "/"));;;
-               (title (car (last tags)));;;
-               (dir (string-join (butlast tags) "/"));;;
-                        (dir (if (string-blank-p dir) (
-"" (concat  "org-roamdefooot/"))));;;
-
+               (tags (split-string title "/"))
+               (title (car (last tags)))
+               (dir (string-join (butlast tags) "/"))
+               (dir (if (string-blank-p dir) "" (concat dir "/")))
                (target-file-path (plist-get res :path))
                (description (or description region-text title))
                (description (if lowercase
@@ -122,7 +113,7 @@ Arguments GOTO and KEYS see `org-capture`."
                  (insert (org-roam-format-link target-file-path description link-type)))
                 (t
                  (let ((org-roam-capture--info `((title . ,title-with-tags)
-                                                 (dir   . ,dir);;;
+                                                 (dir   . ,dir)
                                                  (slug . ,(funcall org-roam-title-to-slug-function title))))
                        (org-roam-capture--context 'title))
                    (setq org-roam-capture-additional-template-props (list :region (org-roam-shield-region beg end)
@@ -135,35 +126,13 @@ Arguments GOTO and KEYS see `org-capture`."
     (deactivate-mark)) ;; Deactivate the mark on quit since `atomic-change-group' prevents it
   )
 
-(make-variable-buffer-local
- (defvar org-roam-session-dir ""
-   "Dir to use in this session when dir is '.'."))
-
-(defcustom org-roam-default-directory "cheese"
-  "Default path to place Org-roam files relative to org-roam-directory.
-When this variable is enabled and customized place in org-roam-directory using '/' "
-  :type 'directory
-  :group 'org-roam)
-
-
-(defun org-roam-session-dir-toggle ()
-  (interactive)
-  (setq foo-count (1+ foo-count))
-  (insert "foo"))
-
-
-(defun org-roam-set-session-dir ()
-  (interactive)
-  (setq org-roam-session-dir (1+ foo-count))
-  (insert "foo"))
-
 ;;;###autoload
 (define-minor-mode org-roam-dir-mode
   "Pick directorys when creating org-roam notes" 
   :lighter "roam-dir"
   :keymap (let ((map (make-sparse-keymap)))
-            (define-key map (kbd "C-c n s") 'org-roam-session-dir-toggle)
-            (define-key map (kbd "C-c n d") 'org-roam-default-dir-toggle)
+            (define-key map (kbd "C-c n d") 'org-roam-toggle-default-dir)
+            (define-key map (kbd "C-c n s") 'org-roam-toggle-session-dir)
             map))
   
 (provide 'org-roam-dir-mode)
